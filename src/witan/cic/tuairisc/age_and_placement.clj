@@ -59,3 +59,20 @@
     (lazy/upmap cpu-pool mapcatf $)))
 
 ;;(parquet/ds-seq->parquet (str out-dir "placement-year-week-counts-2.parquet") $)
+
+(defn care-days-per-week-by-age [year-weeks]
+  (as-> year-weeks $
+    (tc/group-by $ [:simulation :age-years :year-week])
+    (tc/aggregate $ {:days #(dfn/sum (:days %))})
+    (ds-reduce/group-by-column-agg
+     [:age-years :year-week]
+     {:min     (ds-reduce/prob-quantile :days 0.0)
+      :low-95  (ds-reduce/prob-quantile :days 0.05)
+      :q1      (ds-reduce/prob-quantile :days 0.25)
+      :median  (ds-reduce/prob-quantile :days 0.50)
+      :q3      (ds-reduce/prob-quantile :days 0.75)
+      :high-95 (ds-reduce/prob-quantile :days 0.95)
+      :max     (ds-reduce/prob-quantile :days 1.0)}
+     [$])
+    (tc/order-by $ [:age-years :year-week])))
+
