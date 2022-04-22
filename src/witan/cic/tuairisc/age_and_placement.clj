@@ -27,7 +27,7 @@
                     (map (fn [date]
                            (let [age-at-date (du/age birthdate date)]
                              {:year-week (du/year-week date)
-                              :age-years (first age-at-date)})))
+                              :age-years (:years age-at-date)})))
                     (x/by-key identity x/count)
                     (map (fn [rec]
                            (let [k (first rec)
