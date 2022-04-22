@@ -4,22 +4,13 @@
    [net.cgrand.xforms :as x]
    [tablecloth.api :as tc]
    [tech.v3.dataset :as ds]
+   [tech.v3.dataset.reductions :as ds-reduce]
    [tech.v3.datatype.functional :as dfn]
-   [tick.core :as tick]))
+   [tick.core :as tick]
+   [witan.cic.tuairisc.date-utils :as du]))
 
 (set! *warn-on-reflection* true)
 (set! *unchecked-math* :warn-on-boxed)
-
-(defn age [^java.time.LocalDate birthdate
-           ^java.time.LocalDate target-date]
-  (let [duration ^long (.until
-                        birthdate
-                        target-date
-                        java.time.temporal.ChronoUnit/MONTHS)
-        years (quot duration 12)
-        months (mod duration 12)]
-    ;; {:years years :months months}
-    [years months]))
 
 (defn care-days-per-week [{:keys [analysis-start
                                   analysis-end]}
@@ -34,8 +25,8 @@
                    (comp
                     (filter (fn [date] (tick/< analysis-start date analysis-end)))
                     (map (fn [date]
-                           (let [age-at-date (age birthdate date)]
-                             {:year-week (tick/with date :day-of-week 1) ;; Move everything to the Monday of the week
+                           (let [age-at-date (du/age birthdate date)]
+                             {:year-week (du/year-week date)
                               :age-years (first age-at-date)})))
                     (x/by-key identity x/count)
                     (map (fn [rec]
