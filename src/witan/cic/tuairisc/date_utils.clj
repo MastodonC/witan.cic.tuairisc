@@ -9,8 +9,7 @@
                         java.time.temporal.ChronoUnit/MONTHS)
         years (quot duration 12)
         months (mod duration 12)]
-    ;; {:years years :months months}
-    [years months]))
+    {:years years :months months}))
 
 (defn year-week [date]
   (tick/with date :day-of-week 1))  ;; Move everything to the Monday of the week
