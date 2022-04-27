@@ -1,6 +1,12 @@
 (ns witan.cic.tuairisc.by-placement
   (:require [kixi.plot.colors :as c]))
 
+(def placement-sections
+  {"Adoption" (sorted-set "A3" "A4" "A5" "A6")
+   "Children's Homes" (sorted-set "K1" "K2")
+   "Other" (sorted-set "P1" "P2H5" "P3" "Z1")
+   "Fostering" (sorted-set "Q1" "Q2")
+   "Residential" (sorted-set "R1" "R2" "R3" "R5" "S1")})
 
 (def placement-colors-and-shapes
   {"A3" {:color [174.0, 199.0, 232.0, 255.0], :shape \|, :legend-shape \|}

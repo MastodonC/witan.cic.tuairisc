@@ -88,18 +88,20 @@
 (defn parquet->durations [in-file]
   (parquet/parquet->ds-seq in-file {:key-fn keyword}))
 
-(defn care-days-by-keys [{:keys [domain-key time-key]} simulation-sums]
+(defn care-days-by-keys [{:keys [domain-key time-key value-key]
+                          :or {value-key :days}}
+                         simulation-sums]
   (as-> simulation-sums $
     (tc/group-by $ [:simulation domain-key time-key])
-    (tc/aggregate $ {:days #(dfn/sum (:days %))})
+    (tc/aggregate $ {value-key #(dfn/sum (value-key %))})
     (ds-reduce/group-by-column-agg
      [domain-key time-key]
-     {:min     (ds-reduce/prob-quantile :days 0.0)
-      :low-95  (ds-reduce/prob-quantile :days 0.05)
-      :q1      (ds-reduce/prob-quantile :days 0.25)
-      :median  (ds-reduce/prob-quantile :days 0.50)
-      :q3      (ds-reduce/prob-quantile :days 0.75)
-      :high-95 (ds-reduce/prob-quantile :days 0.95)
-      :max     (ds-reduce/prob-quantile :days 1.0)}
+     {:min     (ds-reduce/prob-quantile value-key 0.0)
+      :low-95  (ds-reduce/prob-quantile value-key 0.05)
+      :q1      (ds-reduce/prob-quantile value-key 0.25)
+      :median  (ds-reduce/prob-quantile value-key 0.50)
+      :q3      (ds-reduce/prob-quantile value-key 0.75)
+      :high-95 (ds-reduce/prob-quantile value-key 0.95)
+      :max     (ds-reduce/prob-quantile value-key 1.0)}
      [$])
-    (tc/order-by $ [:age-years :year-week])))
+    (tc/order-by $ [domain-key time-key])))

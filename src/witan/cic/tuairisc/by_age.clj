@@ -1,6 +1,11 @@
-(ns witan.cic.tuairisc.by-age)
+(ns witan.cic.tuairisc.by-age
+  (:require [tablecloth.api :as tc]
+            [witan.cic.tuairisc.report :as report]))
 
-;; This is where charting will go
+(def age-sections
+  {"0-5" (sorted-set 0 1 2 3 4 5)
+   "6-11" (sorted-set 6 7 8 9 10 11)
+   "12-17" (sorted-set 12 13 14 15 16 17)})
 
 (def age-colors-and-shapes
   {0  {:color [31.0, 119.0, 180.0, 255.0], :shape \/, :legend-shape \\}
@@ -22,3 +27,7 @@
    16 {:color [255.0, 187.0, 120.0, 255.0], :shape \O, :legend-shape \O}
    17 {:color [255.0, 127.0, 14.0, 255.0], :shape \/, :legend-shape \\}
    18 {:color [174.0, 199.0, 232.0, 255.0], :shape \o, :legend-shape \o}})
+
+(comment
+
+  )
