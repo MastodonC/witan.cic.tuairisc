@@ -2,6 +2,8 @@
 
 A reporting library for witan.cic
 
+[Pronunciation and definition](https://www.teanglann.ie/en/fuaim/tuairisc)
+
 ## Usage
 
 Put the library in your deps.edn
