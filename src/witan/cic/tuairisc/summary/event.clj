@@ -3,7 +3,7 @@
    [tablecloth.api :as tc]
    [witan.cic.tuairisc.summary :as summary]))
 
-(defn event-summary [projection-episodes {:keys [event-key analysis-keys analysis-range]}]
+(defn summarise [projection-episodes {:keys [event-key analysis-keys analysis-range]}]
   (let [data projection-episodes
         simulation-keys [:simulation]
         unique-keys (conj [:simulation :id] event-key)]
