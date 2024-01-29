@@ -106,8 +106,7 @@
     (as-> ds $
       (dsr/group-by-column-agg
        analysis-keys
-       {;; :row-count-mean (dsr/mean :row-count)
-        :summary summary-reducer}
+       {:summary summary-reducer}
        $)
       (tc/separate-column $ :summary :infer identity)
       (apply (partial tc/complete $) analysis-keys)
