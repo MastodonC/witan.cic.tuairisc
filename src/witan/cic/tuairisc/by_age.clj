@@ -1,6 +1,4 @@
-(ns witan.cic.tuairisc.by-age
-  (:require [tablecloth.api :as tc]
-            [witan.cic.tuairisc.report :as report]))
+(ns witan.cic.tuairisc.by-age)
 
 (def age-sections
   {"0-5" (sorted-set 0 1 2 3 4 5)
