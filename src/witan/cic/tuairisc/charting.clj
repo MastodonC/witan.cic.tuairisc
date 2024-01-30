@@ -154,5 +154,5 @@
 
 (def base-chart-spec
   {:y   :median
-   :irl :q1    :iru :q3    :ir-title "50% range"
-   :orl :low-5 :oru :hi-95 :or-title "90% range"})
+   :irl :q1  :iru :q3  :ir-title "50% range"
+   :orl :p05 :oru :p95 :or-title "90% range"})
