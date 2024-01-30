@@ -1,4 +1,4 @@
-(ns witan.cic.tuairisc.config
+(ns witan.cic.tuairisc.config-reader
   (:require [tick.core :as tick]))
 
 (defn extract-date [c]
