@@ -31,3 +31,9 @@
                           :provenance
                           :placement-sequence :placement-pathway
                           :period-start :period-end :period-duration])))
+
+(defn projection-episodes
+  ([c out-dir]
+   (->ds (str out-dir (c :output-directory) "projection-episodes.csv")))
+  ([c]
+   (projection-episodes c "./")))

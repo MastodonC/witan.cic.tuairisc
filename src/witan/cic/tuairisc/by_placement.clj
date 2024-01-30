@@ -1,5 +1,4 @@
-(ns witan.cic.tuairisc.by-placement
-  (:require [kixi.plot.colors :as c]))
+(ns witan.cic.tuairisc.by-placement)
 
 (def placement-sections
   {"Adoption" (sorted-set "A3" "A4" "A5" "A6")
@@ -26,10 +25,3 @@
    "R5" {:color [31.0, 119.0, 180.0, 255.0], :shape \/, :legend-shape \\}
    "S1" {:color [140.0, 86.0, 75.0, 255.0], :shape \s, :legend-shape \s}
    "Z1" {:color [255.0, 152.0, 150.0, 255.0], :shape \o, :legend-shape \o}})
-
-(comment
-
-  (into (sorted-map)
-        (c/domain-colors-and-shapes #{"A3" "A4" "A5" "A6" "K1" "K2" "P1" "P2H5" "P3" "Q1" "Q2" "R1" "R2" "R3" "R5" "S1" "Z1"}))
-
-  )

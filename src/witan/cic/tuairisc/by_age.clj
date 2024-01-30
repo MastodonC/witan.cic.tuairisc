@@ -1,6 +1,4 @@
-(ns witan.cic.tuairisc.by-age
-  (:require [tablecloth.api :as tc]
-            [witan.cic.tuairisc.report :as report]))
+(ns witan.cic.tuairisc.by-age)
 
 (def age-sections
   {"0-5" (sorted-set 0 1 2 3 4 5)
@@ -28,6 +26,26 @@
    17 {:color [255.0, 127.0, 14.0, 255.0], :shape \/, :legend-shape \\}
    18 {:color [174.0, 199.0, 232.0, 255.0], :shape \o, :legend-shape \o}})
 
-(comment
+(def age-group {0 "Age 0"
+                1 "Age 1-5"
+                2 "Age 1-5"
+                3 "Age 1-5"
+                4 "Age 1-5"
+                5 "Age 1-5"
+                6 "Age 6-10"
+                7 "Age 6-10"
+                8 "Age 6-10"
+                9 "Age 6-10"
+                10 "Age 6-10"
+                11 "Age 11-15"
+                12 "Age 11-15"
+                13 "Age 11-15"
+                14 "Age 11-15"
+                15 "Age 11-15"
+                16 "Age 16"
+                17 "Age 17"})
 
-  )
+(defn broad-age-group [age]
+  (cond
+    (< age 16) "Under 16"
+    (<= 16 age) "16+"))

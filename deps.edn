@@ -1,83 +1,15 @@
 {:paths ["src" "resources"]
- :deps {mastodonc/kixi.large                           {:git/url "https://github.com/MastodonC/kixi.large"
-                                                        :git/sha "c593467394c7007b565fbd395afe00920c6d334d"}
-        mastodonc/kixi.plot                            {:git/url "https://github.com/MastodonC/kixi.plot"
-                                                        :git/sha "70beb9fb10984fd6c857d59275637e9523186026"
-                                                        };;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
-        ;; All of this should probably go in adroddiad or similar
-        org.apache.parquet/parquet-hadoop              {:mvn/version "1.12.0"
-                                                        :exclusions  [org.slf4j/slf4j-log4j12]}
-        org.apache.hadoop/hadoop-common                {:mvn/version "3.3.0"
-                                                        :exclusions 
-                                                        [com.sun.jersey/jersey-core
-                                                         com.sun.jersey/jersey-json
-                                                         com.sun.jersey/jersey-server
-                                                         com.sun.jersey/jersey-servlet
-
-                                                         dnsjava/dnsjava
-
-                                                         org.eclipse.jetty/jetty-server
-                                                         org.eclipse.jetty/jetty-servlet
-                                                         org.eclipse.jetty/jetty-util
-                                                         org.eclipse.jetty/jetty-webapp
-
-                                                         javax.activation/javax.activation-api
-                                                         javax.servlet.jsp/jsp-api
-                                                         javax.servlet/javax.servlet-api
-
-                                                         io.netty/netty-codec
-                                                         io.netty/netty-handler
-                                                         io.netty/netty-transport
-                                                         io.netty/netty-transport-native-epoll
-
-                                                         org.codehaus.jettison/jettison
-
-                                                         org.apache.zookeeper/zookeeper
-
-                                                         org.apache.curator/curator-recipes
-                                                         org.apache.curator/curator-client
-                                                         org.apache.htrace/htrace-core4
-
-                                                         org.apache.hadoop.thirdparty/hadoop-shaded-protobuf_3_7
-                                                         org.apache.hadoop/hadoop-auth
-
-
-                                                         org.apache.kerby/kerb-core
-
-                                                         commons-cli/commons-cli
-                                                         commons-net/commons-net
-                                                         org.apache.commons/commons-lang3
-                                                         org.apache.commons/commons-text
-                                                         org.apache.commons/commons-configuration2
-
-                                                         com.google.re2j/re2j
-                                                         com.google.code.findbugs/jsr305
-
-                                                         com.jcraft/jsch
-
-                                                         log4j/log4j
-                                                         org.slf4j/slf4j-log4j12]}
-        ;; We literally need this for 1 POJO formatting object.
-        org.apache.hadoop/hadoop-mapreduce-client-core {:mvn/version "3.3.0"
-                                                        :exclusions  [org.slf4j/slf4j-log4j12
-                                                                      org.apache.avro/avro
-                                                                      org.apache.hadoop/hadoop-yarn-client
-                                                                      org.apache.hadoop/hadoop-yarn-common
-                                                                      org.apache.hadoop/hadoop-annotations
-                                                                      org.apache.hadoop/hadoop-hdfs-client
-                                                                      io.netty/netty
-                                                                      com.google.inject.extensions/guice-servlet                                                               ]}
-        ;; And the rest
-        org.clojure/clojure                            {:mvn/version "1.11.0"}
-        net.cgrand/xforms                              {:mvn/version "0.19.2"}
-        tick/tick                                      {:mvn/version "0.5.0-RC5"}
-        }
+ :deps  {com.github.mastodonc/kixi.large {:git/sha "bda0812f692b8521e8273ff8c7754499ee834b5e"}
+         net.cgrand/xforms               {:mvn/version "0.19.6"}
+         tick/tick                       {:mvn/version "0.7.5"}}
  :aliases
  {:test
   {:extra-paths ["test"]
-   :extra-deps {org.clojure/test.check {:mvn/version "1.1.1"}
-                io.github.cognitect-labs/test-runner
-                {:git/tag "v0.5.0" :git/sha "48c3c67"}}}
-  :build {:deps {io.github.seancorfield/build-clj
-                 {:git/tag "v0.6.6" :git/sha "171d5f1"}}
+   :extra-deps  {org.clojure/clojure    {:mvn/version "1.11.0"}
+                 scicloj/tablecloth     {:mvn/version "7.021"}
+                 org.clojure/test.check {:mvn/version "1.1.1"}
+                 io.github.cognitect-labs/test-runner
+                 {:git/tag "v0.5.0" :git/sha "48c3c67"}}}
+  :build {:deps       {io.github.seancorfield/build-clj
+                       {:git/tag "v0.6.6" :git/sha "171d5f1"}}
           :ns-default build}}}
