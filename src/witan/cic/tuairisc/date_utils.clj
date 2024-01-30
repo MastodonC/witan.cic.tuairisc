@@ -19,6 +19,12 @@
 
 (defn overlaps-window?
   "
+ws/we window-start/window-end
+ps/pe period-start/period-end
+
+The chart below shows the relationship between the periods and whether
+or not this function should return true or false
+
                  ws        we
    false: ps pe
     true: ps       pe
