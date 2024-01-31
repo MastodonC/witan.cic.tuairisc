@@ -44,18 +44,20 @@
       (hf/immut-list $))))
 
 
-(defn summarise-simulation-census [data {:keys [analysis-keys]}]
+(defn summarise-simulation-census [projection-episodes {:keys [analysis-keys]}]
   (let [simulation-keys [:simulation]]
     (dsr/group-by-column-agg
      (into simulation-keys analysis-keys)
      {:row-count (dsr/row-count)}
-     data)))
+     projection-episodes)))
 
-(defn summarise [projection-episodes {:keys [analysis-keys]
-                                      :as config}]
-  (let [data projection-episodes]
-    (as-> data $
-      ;; Make sure we only select rows that will produce results in the seq
-      (range->census $ config)
-      (summarise-simulation-census $ config)
-      ((summary/summarise analysis-keys) $))))
+(defn summarise
+  ([projection-episodes {:keys [analysis-keys]
+                         :as config}]
+   (as-> projection-episodes $
+     ;; Make sure we only select rows that will produce results in the seq
+     (range->census $ config)
+     (summarise-simulation-census $ config)
+     ((summary/summarise analysis-keys) $)))
+  ([{:keys [projection-episodes] :as config}]
+   (summarise projection-episodes config)))

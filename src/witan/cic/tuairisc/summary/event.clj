@@ -3,14 +3,16 @@
    [tablecloth.api :as tc]
    [witan.cic.tuairisc.summary :as summary]))
 
-(defn summarise [projection-episodes {:keys [event-key analysis-keys analysis-range]}]
-  (let [data projection-episodes
-        simulation-keys [:simulation]
-        unique-keys (conj [:simulation :id] event-key)]
-    (as-> data $
-      (tc/unique-by $ unique-keys)
-      (tc/map-rows $ (summary/event-extractor-fn event-key analysis-range))
-      (tc/drop-missing $)
-      (tc/group-by $ (into simulation-keys analysis-keys))
-      (tc/aggregate $ {:row-count tc/row-count})
-      ((summary/summarise analysis-keys) $))))
+(defn summarise
+  ([projection-episodes {:keys [event-key analysis-keys analysis-range]}]
+   (let [simulation-keys [:simulation]
+         unique-keys (conj [:simulation :id] event-key)]
+     (as-> projection-episodes $
+       (tc/unique-by $ unique-keys)
+       (tc/map-rows $ (summary/event-extractor-fn event-key analysis-range))
+       (tc/drop-missing $)
+       (tc/group-by $ (into simulation-keys analysis-keys))
+       (tc/aggregate $ {:row-count tc/row-count})
+       ((summary/summarise analysis-keys) $))))
+  ([{:keys [projection-episodes] :as config}]
+   (summarise projection-episodes config)))
