@@ -70,9 +70,9 @@
                  :broad-age-group-at-analysis-date (age/broad-age-group age)
                  :age-group-at-analysis-date (age/age-group age)))))))
 
-(def summary-reducer
+(defn summary-reducer [value-key]
   (dsr/reducer
-   :row-count
+   value-key ;; :row-count
    ;; hfr/parallel-reducer
    ;; init-fn
    (fn [] [])
@@ -101,14 +101,16 @@
         :simulation-count simulation-count
         :observations     observations}))))
 
-(defn summarise [analysis-keys]
-  (fn [ds]
-    (as-> ds $
-      (dsr/group-by-column-agg
-       analysis-keys
-       {:summary summary-reducer}
-       $)
-      (tc/separate-column $ :summary :infer identity)
-      (apply (partial tc/complete $) analysis-keys)
-      (tc/replace-missing $ [:min :p05 :q1 :median :q3 :p95 :max :mean :observations :simulation-count] :value 0)
-      (tc/order-by $ analysis-keys))))
+(defn summarise
+  ([analysis-keys value-key]
+   (fn [ds]
+     (as-> ds $
+       (dsr/group-by-column-agg
+        analysis-keys
+        {:summary (summary-reducer value-key)}
+        $)
+       (tc/separate-column $ :summary :infer identity)
+       (apply (partial tc/complete $) analysis-keys)
+       (tc/replace-missing $ [:min :p05 :q1 :median :q3 :p95 :max :mean :observations :simulation-count] :value 0)
+       (tc/order-by $ analysis-keys))))
+  ([analysis-keys] (summarise analysis-keys :row-count)))
