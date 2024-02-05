@@ -28,9 +28,11 @@
 
 (defn line-and-ribbon-and-rule-plot [{:keys [data
                                              chart-title
-                                             x
-                                             y
-                                             group
+                                             x x-title
+                                             y y-title
+                                             irl iru ir-title
+                                             orl oru or-title
+                                             group group-title
                                              height width
                                              colors-and-shapes]
                                       :or {height 200
@@ -43,10 +45,18 @@
    :config {:legend {:titleFontSize 20 :labelFontSize 14}
             :axisX {:titleFontSize 16 :labelFontSize 12}
             :axisY {:titleFontSize 16 :labelFontSize 12}}
-   :encoding {:x {:field x :type "temporal"}}
+   :encoding {:x {:field x :title x-title :type "temporal"}}
    :layer [{:encoding {:color (color-map data group colors-and-shapes)
                        :y {:field y :type "quantitative" :scale {:domain false :zero false}}}
-            :layer [{:mark {:type "line" :size 5}}
+            :layer [{:mark "errorband"
+                     :encoding {:y {:field oru :title y-title :type "quantitative"}
+                                :y2 {:field orl}
+                                :color {:field group :title group-title}}}
+                    {:mark "errorband"
+                     :encoding {:y {:field iru :title y-title :type "quantitative"}
+                                :y2 {:field irl}
+                                :color {:field group :title group-title}}}
+                    {:mark {:type "line" :size 5}}
                     {:transform [{:filter {:param "hover" :empty false}}] :mark "point"}]}
            {:transform [{:pivot group :value y :groupby [x]}]
             :mark "rule"
