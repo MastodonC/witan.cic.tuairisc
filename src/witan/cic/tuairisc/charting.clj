@@ -62,7 +62,14 @@
                                 :color {:field group :title group-title}}}
                     {:mark {:type "line" :size 5}}
                     {:transform [{:filter {:param "hover" :empty false}}] :mark {:type "point" :size 200}}]}
-           {:transform [{:pivot group :value tooltip-field :groupby [x]}]
+           {:transform [
+                        {:pivot group :value y :groupby [x]}
+                        ;; pivot on the median is better
+                        ;; {:pivot group :value tooltip-field :op "values" :groupby [x]}
+                        ;; the aggregate doesn’t do what I want
+                        {:aggregate [{:op "values" :field tooltip-field}]
+                         :groupby [x]}
+                        ]
             :mark "rule"
             :encoding {:opacity {:condition {:value 1 #_0.3 :param "hover" :empty false}
                                  :value 0}
