@@ -28,13 +28,20 @@
 
 (defn line-and-ribbon-and-rule-plot [{:keys [data
                                              chart-title
-                                             x
-                                             y
-                                             group
-                                             height width]
+                                             x x-title x-format
+                                             y y-title y-format
+                                             irl iru ir-title
+                                             orl oru or-title
+                                             tooltip-field tooltip-formatf
+                                             group group-title
+                                             height width
+                                             colors-and-shapes]
                                       :or {height 200
-                                           width 1000}}]
+                                           width 1000
+                                           tooltip-field :median
+                                           tooltip-formatf identity}}]
   {:data {:values (-> data
+                      tooltip-formatf
                       (tc/rows :as-maps))}
    :height height
    :width width
@@ -42,20 +49,32 @@
    :config {:legend {:titleFontSize 20 :labelFontSize 14}
             :axisX {:titleFontSize 16 :labelFontSize 12}
             :axisY {:titleFontSize 16 :labelFontSize 12}}
-   :encoding {:x {:field x :type "temporal"}}
-   :layer [{:encoding {:color {:field group :type "nominal"}
+   :encoding {:x {:field x :title x-title :type "temporal"}}
+   :layer [{:encoding {:color (color-map data group colors-and-shapes)
                        :y {:field y :type "quantitative" :scale {:domain false :zero false}}}
-            :layer [{:mark {:type "line" :size 5}}
-                    {:transform [{:filter {:param "hover" :empty false}}] :mark "point"}]}
-           {:transform [{:pivot group :value y :groupby [x]}]
+            :layer [{:mark "errorband"
+                     :encoding {:y {:field oru :title y-title :type "quantitative"}
+                                :y2 {:field orl}
+                                :color {:field group :title group-title}}}
+                    {:mark "errorband"
+                     :encoding {:y {:field iru :title y-title :type "quantitative"}
+                                :y2 {:field irl}
+                                :color {:field group :title group-title}}}
+                    {:mark {:type "line" :size 5}}
+                    {:transform [{:filter {:param "hover" :empty false}}] :mark {:type "point" :size 200}}]}
+           {:transform [{:pivot group :value tooltip-field :groupby [x]}]
             :mark "rule"
-            :encoding {:opacity {:condition {:value 0.3 :param "hover" :empty false}
+            :encoding {:opacity {:condition {:value 1 #_0.3 :param "hover" :empty false}
                                  :value 0}
-                       :tooltip (into []
-                                      (map (fn [g] {:field g :type "quantitative"}))
+                       :tooltip (into [{:field x :type "temporal" :format x-format :title x-title}]
+                                      (map (fn [g] {:field g 
+                                                    ;; :type "quantitative"
+                                                    :type "nominal"
+                                                    }))
                                       (into (sorted-set) (data group)))}
             :params [{:name "hover"
                       :select {:type "point"
+                               :size 200
                                :fields [x]
                                :nearest true
                                :on "pointerover"
