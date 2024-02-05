@@ -26,6 +26,40 @@
              :domain (into [] (:domain-value filtered-shapes))}}))
 
 
+(defn line-and-ribbon-and-rule-plot [{:keys [data
+                                             chart-title
+                                             x
+                                             y
+                                             group
+                                             height width]
+                                      :or {height 200
+                                           width 1000}}]
+  {:data {:values (-> data
+                      (tc/rows :as-maps))}
+   :height height
+   :width width
+   :title {:text chart-title :fontSize 24}
+   :config {:legend {:titleFontSize 20 :labelFontSize 14}
+            :axisX {:titleFontSize 16 :labelFontSize 12}
+            :axisY {:titleFontSize 16 :labelFontSize 12}}
+   :encoding {:x {:field x :type "temporal"}}
+   :layer [{:encoding {:color {:field group :type "nominal"}
+                       :y {:field y :type "quantitative" :scale {:domain false :zero false}}}
+            :layer [{:mark {:type "line" :size 5}}
+                    {:transform [{:filter {:param "hover" :empty false}}] :mark "point"}]}
+           {:transform [{:pivot group :value y :groupby [x]}]
+            :mark "rule"
+            :encoding {:opacity {:condition {:value 0.3 :param "hover" :empty false}
+                                 :value 0}
+                       :tooltip (into []
+                                      (map (fn [g] {:field g :type "quantitative"}))
+                                      (into (sorted-set) (data group)))}
+            :params [{:name "hover"
+                      :select {:type "point"
+                               :fields [x]
+                               :nearest true
+                               :on "pointerover"
+                               :clear "pointerout"}}]}]})
 
 (defn line-and-ribbon-plot
   [{:keys [data
