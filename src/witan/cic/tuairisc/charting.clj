@@ -67,16 +67,16 @@
                         ;; pivot on the median is better
                         ;; {:pivot group :value tooltip-field :op "values" :groupby [x]}
                         ;; the aggregate doesn’t do what I want
-                        {:aggregate [{:op "values" :field tooltip-field}]
-                         :groupby [x]}
+                        ;; {:aggregate [{:op "values" :field tooltip-field}]
+                        ;;  :groupby [x]}
                         ]
             :mark "rule"
             :encoding {:opacity {:condition {:value 1 #_0.3 :param "hover" :empty false}
                                  :value 0}
                        :tooltip (into [{:field x :type "temporal" :format x-format :title x-title}]
                                       (map (fn [g] {:field g 
-                                                    ;; :type "quantitative"
-                                                    :type "nominal"
+                                                    :type "quantitative"
+                                                    ;; :type "nominal"
                                                     }))
                                       (into (sorted-set) (data group)))}
             :params [{:name "hover"
