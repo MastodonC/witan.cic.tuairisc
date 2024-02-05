@@ -31,7 +31,8 @@
                                              x
                                              y
                                              group
-                                             height width]
+                                             height width
+                                             colors-and-shapes]
                                       :or {height 200
                                            width 1000}}]
   {:data {:values (-> data
@@ -43,7 +44,7 @@
             :axisX {:titleFontSize 16 :labelFontSize 12}
             :axisY {:titleFontSize 16 :labelFontSize 12}}
    :encoding {:x {:field x :type "temporal"}}
-   :layer [{:encoding {:color {:field group :type "nominal"}
+   :layer [{:encoding {:color (color-map data group colors-and-shapes)
                        :y {:field y :type "quantitative" :scale {:domain false :zero false}}}
             :layer [{:mark {:type "line" :size 5}}
                     {:transform [{:filter {:param "hover" :empty false}}] :mark "point"}]}
@@ -56,6 +57,7 @@
                                       (into (sorted-set) (data group)))}
             :params [{:name "hover"
                       :select {:type "point"
+                               :size 200
                                :fields [x]
                                :nearest true
                                :on "pointerover"
