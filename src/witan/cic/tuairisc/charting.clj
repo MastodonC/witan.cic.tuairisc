@@ -47,6 +47,7 @@
                                                   (fn [p05 q1 median q3 p95] (format "Median: %,.0f IQR: %,.0f-%,.0f 90%% Range: %,.0f-%,.0f"  median q1 q3 p05 p95)))
                                   (tc/select-columns [group x tooltip-field])
                                   (tc/pivot->wider [group] [tooltip-field] {:drop-missing? false})
+                                  (tc/replace-missing :all :value "")
                                   (tc/order-by [x])
                                   (tc/rows :as-maps))))]
     {:data {:values (-> data
