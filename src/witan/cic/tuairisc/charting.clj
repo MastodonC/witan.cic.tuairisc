@@ -30,15 +30,17 @@
   [{:keys [data
            chart-title
            x x-title x-format
-           y y-title y-format
+           y y-title y-format y-scale y-zero
            irl iru ir-title
            orl oru or-title
            tooltip-field tooltip-formatf
            group group-title
-           height width
+           chart-height chart-width
            colors-and-shapes]
-    :or {height 200
-         width 1000
+    :or {chart-height full-height
+         chart-width full-width
+         y-domain false
+         y-zero true
          tooltip-field :tooltip-column}}]
   (let [tooltip-formatf (or tooltip-formatf
                             (fn [ds]
@@ -52,15 +54,15 @@
                                   (tc/rows :as-maps))))]
     {:data {:values (-> data
                         (tc/rows :as-maps))}
-     :height height
-     :width width
+     :height chart-height
+     :width chart-width
      :title {:text chart-title :fontSize 24}
      :config {:legend {:titleFontSize 20 :labelFontSize 14}
               :axisX {:titleFontSize 16 :labelFontSize 12}
               :axisY {:titleFontSize 16 :labelFontSize 12}}
      :encoding {:x {:field x :title x-title :type "temporal"}}
      :layer [{:encoding {:color (color-map data group colors-and-shapes)
-                         :y {:field y :type "quantitative" :scale {:domain false :zero false}}}
+                         :y {:field y :type "quantitative" :scale {:domain y-scale :zero y-zero}}}
               :layer [{:mark "errorband"
                        :encoding {:y {:field oru :title y-title :type "quantitative"}
                                   :y2 {:field orl}
