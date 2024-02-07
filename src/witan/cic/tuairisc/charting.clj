@@ -70,10 +70,10 @@
                                   :y2 {:field irl}
                                   :color {:field group :title group-title}}}
                       {:mark {:type "line" :size 5}}
-                      {:transform [{:filter {:param "hover" :empty false}}] :mark {:type "point" :size 200}}]}
+                      {:transform [{:filter {:param "hover" :empty false}}] :mark {:type "point" :size 200 :strokeWidth 5}}]}
              {:data {:values (tooltip-formatf data)}
-              :mark "rule"
-              :encoding {:opacity {:condition {:value 1 #_0.3 :param "hover" :empty false}
+              :mark {:type "rule" :strokeWidth 4}
+              :encoding {:opacity {:condition {:value 0.3 :param "hover" :empty false}
                                    :value 0}
                          :tooltip (into [{:field x :type "temporal" :format x-format :title x-title}]
                                         (map (fn [g] {:field g}))
