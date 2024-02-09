@@ -26,6 +26,34 @@
              :domain (into [] (:domain-value filtered-shapes))}}))
 
 
+(defn number-summary-tooltip
+  [{:keys [tooltip-field group x]
+    :or {tooltip-field :tooltip-field
+         x :analysis-date}}]
+  (fn [ds]
+    (-> ds
+        (tc/map-columns tooltip-field [:p05 :q1 :median :q3 :p95]
+                        (fn [p05 q1 median q3 p95] (format "Median: %,.0f 50%%: %,.0f-%,.0f 90%%: %,.0f-%,.0f"  median q1 q3 p05 p95)))
+        (tc/select-columns [group x tooltip-field])
+        (tc/pivot->wider [group] [tooltip-field] {:drop-missing? false})
+        (tc/replace-missing :all :value "")
+        (tc/order-by [x])
+        (tc/rows :as-maps))))
+
+(defn pct-summary-tooltip
+  [{:keys [tooltip-field group x]
+    :or {tooltip-field :tooltip-field
+         x :analysis-date}}]
+  (fn [ds]
+    (-> ds
+        (tc/map-columns tooltip-field [:p05 :q1 :median :q3 :p95]
+                        (fn [p05 q1 median q3 p95] (format "Percentages Median: %.1f 50%%: %.1f-%.1f 90%%: %.1f-%.1f"  (* 100 median) (* 100 q1) (* 100 q3) (* 100 p05) (* 100 p95))))
+        (tc/select-columns [group x tooltip-field])
+        (tc/pivot->wider [group] [tooltip-field] {:drop-missing? false})
+        (tc/replace-missing :all :value "")
+        (tc/order-by [x])
+        (tc/rows :as-maps))))
+
 (defn line-and-ribbon-and-rule-plot
   [{:keys [data
            chart-title
@@ -41,17 +69,12 @@
          chart-width full-width
          y-domain false
          y-zero true
+         y-format ",.0f"
          tooltip-field :tooltip-column}}]
   (let [tooltip-formatf (or tooltip-formatf
-                            (fn [ds]
-                              (-> ds
-                                  (tc/map-columns tooltip-field [:p05 :q1 :median :q3 :p95]
-                                                  (fn [p05 q1 median q3 p95] (format "Median: %,.0f IQR: %,.0f-%,.0f 90%% Range: %,.0f-%,.0f"  median q1 q3 p05 p95)))
-                                  (tc/select-columns [group x tooltip-field])
-                                  (tc/pivot->wider [group] [tooltip-field] {:drop-missing? false})
-                                  (tc/replace-missing :all :value "")
-                                  (tc/order-by [x])
-                                  (tc/rows :as-maps))))]
+                            (number-summary-tooltip {:tooltip-field tooltip-field
+                                                     :group group
+                                                     :x x}))]
     {:data {:values (-> data
                         (tc/rows :as-maps))}
      :height chart-height
@@ -62,7 +85,10 @@
               :axisY {:titleFontSize 16 :labelFontSize 12}}
      :encoding {:x {:field x :title x-title :type "temporal"}}
      :layer [{:encoding {:color (color-map data group colors-and-shapes)
-                         :y {:field y :type "quantitative" :scale {:domain y-scale :zero y-zero}}}
+                         :y {:field y
+                             :type "quantitative"
+                             :axis {:format y-format}
+                             :scale {:domain y-scale :zero y-zero}}}
               :layer [{:mark "errorband"
                        :encoding {:y {:field oru :title y-title :type "quantitative"}
                                   :y2 {:field orl}
