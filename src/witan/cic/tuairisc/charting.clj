@@ -25,7 +25,6 @@
      :scale {:range (into [] (:shape filtered-shapes))
              :domain (into [] (:domain-value filtered-shapes))}}))
 
-
 (defn number-summary-tooltip
   [{:keys [tooltip-field group x]
     :or {tooltip-field :tooltip-field
