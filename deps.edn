@@ -1,5 +1,6 @@
 {:paths ["src" "resources"]
  :deps  {com.github.mastodonc/kixi.large {:git/sha "bda0812f692b8521e8273ff8c7754499ee834b5e"}
+         com.github.mastodonc/kixi.plot  {:git/sha "e1c744daddd248ad01c673eab4bfa6fb01d5f7e6"}
          net.cgrand/xforms               {:mvn/version "0.19.6"}
          tick/tick                       {:mvn/version "0.7.5"}}
  :aliases

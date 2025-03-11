@@ -1,13 +1,60 @@
 (ns witan.cic.tuairisc.charting
-  (:require [tablecloth.api :as tc]))
+  (:require
+   [tablecloth.api :as tc]))
 
 (def full-height 800)
 (def full-width 1200)
 
+(def colors
+  [;; tableau 10 without red
+   "#4e79a7"
+   "#f28e2b"
+   #_"#e15759"
+   "#59a14f"
+   "#d36295"
+   "#9c755f"
+   "#edc948"
+   "#79706e"
+   "#b07aa1"
+   "#76b7b2"
+   ;; tableau 20 lighter shades
+   "#a0cbe8"
+   "#ffbe7d"
+   "#8cd17d"
+   "#b6992d"
+   "#f1ce63"
+   "#499894"
+   "#86bcb6"
+   "#bab0ac"
+   "#ff9da7"
+   "#fabfd2"
+   "#d4a6c8"
+   "#d7b5a6"])
+
 (defn color-and-shape-lookup [domain]
-  (tc/dataset {:domain-value domain
-               :color (cycle ["#29733c" "#fa814c" "#256cc6" "#fbe44c" "#50b938" "#59c4b8"])
-               :shape (cycle ["circle", "square", "cross", "diamond", "triangle-up", "triangle-down", "triangle-right", "triangle-left"])}))
+  (tc/dataset
+   {:domain-value domain
+    :color (cycle colors)
+    :shape (cycle ["circle" ;; ○
+                   "square" ;; □
+                   "triangle-up" ;; △
+                   "triangle-down" ;; ▽
+                   "triangle-right" ;; ▷
+                   "triangle-left" ;; ◁
+                   "cross" ;; +
+                   "diamond" ;; ◇
+                   ])
+    :unicode-shape (cycle ["○"
+                           "□"
+                           "△"
+                           "▽"
+                           "▷"
+                           "◁"
+                           "+"
+                           "◇"])}
+   #_{:domain-value domain
+      :color (cycle ["#29733c" "#fa814c" "#256cc6" "#fbe44c" "#50b938" "#59c4b8"])
+      :shape (cycle ["circle", "square", "cross", "diamond", "triangle-up", "triangle-down", "triangle-right", "triangle-left"])}))
 
 
 (defn color-map [plot-data color-field color-lookup]
@@ -32,7 +79,7 @@
   (fn [ds]
     (-> ds
         (tc/map-columns tooltip-field [:p05 :q1 :median :q3 :p95]
-                        (fn [p05 q1 median q3 p95] (format "Median: %,.0f 50%%: %,.0f-%,.0f 90%%: %,.0f-%,.0f"  median q1 q3 p05 p95)))
+                        (fn [p05 q1 median q3 p95] (format "%,.0f (%,.0f (%,.0f↔%,.0f) %,.0f)" #_"Median: %,.0f 50%%: %,.0f-%,.0f 90%%: %,.0f-%,.0f"  median q1 q3 p05 p95)))
         (tc/select-columns [group x tooltip-field])
         (tc/pivot->wider [group] [tooltip-field] {:drop-missing? false})
         (tc/replace-missing :all :value "")
@@ -82,7 +129,9 @@
      :config {:legend {:titleFontSize 20 :labelFontSize 14}
               :axisX {:titleFontSize 16 :labelFontSize 12}
               :axisY {:titleFontSize 16 :labelFontSize 12}}
-     :encoding {:x {:field x :title x-title :type "temporal"}}
+     :encoding {:x {:field x :title x-title
+                    ;; :type "temporal"
+                    }}
      :layer [{:encoding {:color (color-map data group colors-and-shapes)
                          :y {:field y
                              :type "quantitative"
@@ -102,7 +151,8 @@
               :mark {:type "rule" :strokeWidth 4}
               :encoding {:opacity {:condition {:value 0.3 :param "hover" :empty false}
                                    :value 0}
-                         :tooltip (into [{:field x :type "temporal" :format x-format :title x-title}]
+                         :tooltip (into [{:field x ;; :type "temporal"
+                                          :format x-format :title x-title}]
                                         (map (fn [g] {:field g}))
                                         (into (sorted-set) (data group)))}
               :params [{:name "hover"
