@@ -116,6 +116,7 @@
 
 (defn line-and-ribbon-and-rule-plot
   "Vega-Lite specs for a line, shape and ribbon plot, by `group`, with a \"hover\" vertical rule tooltip."
+  ;; FIXME: It would be good to have other plots follow this adroddiad inspired form
   [{:keys [data
            chart-title
            x x-title x-format x-scale
@@ -199,6 +200,7 @@
                                       :clear   "pointerout"}}]}]}))
 
 (defn line-and-ribbon-plot
+  ;; FIXME: Update with what we've leanrned from adroddiad
   [{:keys [data
            chart-title chart-height chart-width
            x x-title x-format
@@ -257,6 +259,7 @@
                                  {:field :or :title or-title}]}}]})
 
 (defn line-shape-and-ribbon-plot
+  ;; FIXME: Update with what we've learned from adroddiad
   [{:keys [data
            chart-title
            chart-height chart-width
