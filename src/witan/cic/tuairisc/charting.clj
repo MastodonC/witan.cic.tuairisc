@@ -200,7 +200,7 @@
                                       :clear   "pointerout"}}]}]}))
 
 (defn line-and-ribbon-plot
-  ;; FIXME: Update with what we've leanrned from adroddiad
+  ;; FIXME: Update with what we've learned from adroddiad
   [{:keys [data
            chart-title chart-height chart-width
            x x-title x-format
